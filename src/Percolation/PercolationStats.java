@@ -11,12 +11,14 @@ public class PercolationStats {
     // perform trials independent experiments on an n-by-n grid
     public PercolationStats(int n, int trials){
         _trials = trials;
+        _openSitesPercentWhenPercolates = new double[n];
         for (int i = 0; i < trials; i++) {
             PercolationQuickFind percolationQuickFind = new PercolationQuickFind(n);
 
             do {
                 percolationQuickFind.open(StdRandom.uniform(0, n), StdRandom.uniform(0, n));
-            } while (!percolationQuickFind.percolates());
+            } while ((!percolationQuickFind.percolates()) && (percolationQuickFind.numberOfOpenSites() < n * n));
+
 
             int openSites = percolationQuickFind.numberOfOpenSites();
             _openSitesPercentWhenPercolates[i] = openSites / (n * n);
@@ -41,7 +43,11 @@ public class PercolationStats {
     }
     // test client (described below)
     public static void main(String[] args) {
+        System.out.println("sadsasd");
         PercolationStats percolationStats = new PercolationStats(10, 3);
-        int a = 1;
+        System.out.println("mean: " + percolationStats.mean());
+        System.out.println("stddev: " + percolationStats.stddev());
+        System.out.println("Lo: " + percolationStats.confidenceLo());
+        System.out.println("Hi: " + percolationStats.confidenceHi());
     }
 }

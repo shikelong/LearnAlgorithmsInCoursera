@@ -82,9 +82,10 @@ public class PercolationQuickFind {
     // create n-by-n grid, with all sites blocked
     public PercolationQuickFind(int n) {
         if (n <= 0) throw new IllegalArgumentException("the n should large than 0");
+        sites = new Site[n][n];
         int number = 0;
-        for (int i = 0; i <= n; i++) {
-            for (int j = 0; j <= n; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 Site site = new Site(number, CloseSite);
                 sites[i][j] = site;
             }
