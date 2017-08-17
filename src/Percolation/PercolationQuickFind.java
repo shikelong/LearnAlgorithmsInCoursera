@@ -58,6 +58,14 @@ public class PercolationQuickFind {
             for (int j = 0; j < sites.length; j++) {
                 if (sites[i][j].Value == p2Value) {
                     sites[i][j].Value = p1Value;
+                    if (i == 0) {
+                        //set the virtual top site value too.
+                        _virtualTopSite.Value = p1Value;
+                    } else if (i == sites.length - 1) {
+                        //set the virtual bottom site value too.
+                        _virtualBottomSite.Value = p1Value;
+                    }
+
                 }
             }
         }
@@ -69,7 +77,9 @@ public class PercolationQuickFind {
         if (p1Value == p2Value || sites[p2x][p2y].SiteStatus == CloseSite) return;
         for (int i = 0; i < sites.length; i++) {
             for (int j = 0; j < sites.length; j++) {
-                if (sites[i][j].Value == p2Value) {
+                if (p1Value == -1 || p1Value == -2) {
+                    p1.Value = p2Value;
+                } else if (sites[i][j].Value == p2Value) {
                     sites[i][j].Value = p1Value;
                 }
             }
@@ -88,6 +98,7 @@ public class PercolationQuickFind {
             for (int j = 0; j < n; j++) {
                 Site site = new Site(number, CloseSite);
                 sites[i][j] = site;
+                number++;
             }
         }
     }
