@@ -6,6 +6,7 @@ import edu.princeton.cs.algs4.StdStats;
 public class PercolationStats {
 
     private double _openSitesPercentWhenPercolates[];
+
     private int _trials;
 
     // perform trials independent experiments on an n-by-n grid
@@ -13,14 +14,15 @@ public class PercolationStats {
         _trials = trials;
         _openSitesPercentWhenPercolates = new double[trials];
         for (int i = 0; i < trials; i++) {
-            PercolationQuickFind percolationQuickFind = new PercolationQuickFind(n);
+            //PercolationQuickFind percolationIns = new PercolationQuickFind(n);
+            PercolationWeightedQuickUnion percolationIns = new PercolationWeightedQuickUnion(n);
             do {
                 int x = StdRandom.uniform(0, n), y = StdRandom.uniform(0, n);
-                percolationQuickFind.open(x, y);
-            } while ((!percolationQuickFind.percolates()) && (percolationQuickFind.numberOfOpenSites() < n * n));
+                percolationIns.open(x, y);
+            } while ((!percolationIns.percolates()) && (percolationIns.numberOfOpenSites() < n * n));
 
 
-            int openSites = percolationQuickFind.numberOfOpenSites();
+            int openSites = percolationIns.numberOfOpenSites();
             _openSitesPercentWhenPercolates[i] = openSites / ((double) n * n);
         }
 
