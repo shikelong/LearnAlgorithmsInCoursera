@@ -15,10 +15,11 @@ public class PercolationWeightedQuickUnion {
 
         private boolean IsVirtualSite;
 
-        public Site(Point point, int siteStatus, boolean isVirtualSite) {
+        public Site(Point point, int siteStatus, boolean isVirtualSite, int size) {
             NodePoint = point;
             SiteStatus = siteStatus;
             IsVirtualSite = isVirtualSite;
+            Size = size;
         }
 
         public int getSiteStatus() {
@@ -96,14 +97,14 @@ public class PercolationWeightedQuickUnion {
 
         Point topSitePoint = new Point(-1, -1);
         Point bottomSitePoint = new Point(-2, -2);
-        _virtualTopSite = new Site(topSitePoint, OpenSite, true);
-        _virtualBottomSite = new Site(bottomSitePoint, OpenSite, true);
+        _virtualTopSite = new Site(topSitePoint, OpenSite, true, 1);
+        _virtualBottomSite = new Site(bottomSitePoint, OpenSite, true, 1);
 
         sites = new Site[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 Point nodePoint = new Point(i, j);
-                Site site = new Site(nodePoint, CloseSite, false);
+                Site site = new Site(nodePoint, CloseSite, false, 1);
                 sites[i][j] = site;
             }
         }
@@ -116,6 +117,14 @@ public class PercolationWeightedQuickUnion {
             return root(sitePoint);
         }
         return point;
+    }
+
+    //get Root Methods for virutal Site
+    private Point root(Site virtualSite){
+        if (virtualSite.NodePoint.X < 0){
+            return virtualSite.NodePoint;
+        }
+        return root(virtualSite.NodePoint);
     }
 
     private boolean connected(Point p1, Point p2) {
@@ -134,11 +143,13 @@ public class PercolationWeightedQuickUnion {
         if (rootP1.IsEqual(rootP2) || sites[p2.X][p2.Y].SiteStatus == CloseSite){
             return;
         }
-
+        //把比较小的树 作为子树添加到比较大的树上去 And
         if (p1Size < p2Size) {
             sites[rootP1.X][rootP1.Y].setNodePoint(sites[rootP2.X][rootP2.Y].getNodePoint());
+            sites[rootP2.X][rootP2.Y].Size += sites[rootP1.X][rootP1.Y].Size;
         } else {
             sites[rootP2.X][rootP2.Y].setNodePoint(sites[rootP1.X][rootP1.Y].getNodePoint());
+            sites[rootP1.X][rootP1.Y].Size += sites[rootP2.X][rootP2.Y].Size;
         }
     }
 
@@ -198,7 +209,7 @@ public class PercolationWeightedQuickUnion {
 
     // is site (row, col) full?
     public boolean isFull(int row, int col) {
-        return _virtualTopSite.getNodePoint().IsEqual(sites[row][col].getNodePoint());
+        return  root(_virtualTopSite).IsEqual(root(sites[row][col].getNodePoint()));
     }
 
     // number of open sites
@@ -209,7 +220,7 @@ public class PercolationWeightedQuickUnion {
     // does the system percolate?
     public boolean percolates() {
         //isTheVisualTopConnectedWithTheBottom
-        return _virtualTopSite.getNodePoint().IsEqual(_virtualBottomSite.getNodePoint());
+        return root(_virtualTopSite).IsEqual(root(_virtualBottomSite));
     }
 
     //endregion
